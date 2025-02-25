@@ -1,0 +1,2 @@
+ArtLand_AI
+ArtLand_AI is an innovative AI software designed to create and enhance artistic landscapes. By leveraging artificial intelligence, the program provides users with tools to generate unique landscapes, enhance existing artwork, and find inspiration through a curated gallery. The software can also create sketches and drawings from photos, transforming your images into stunning pieces of art.
