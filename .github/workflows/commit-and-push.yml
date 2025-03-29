@@ -1,0 +1,37 @@
+name: Commit and Push Changes
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  commit-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure Git using secrets for user name and email
+      - name: Set up Git with Secrets
+        run: |
+          git config user.name "${{ secrets.GIT_USER_NAME }}"
+          git config user.email "${{ secrets.GIT_USER_EMAIL }}"
+
+      # Step 3: Add all created/modified files
+      - name: Add Changes
+        run: |
+          git add .
+      
+      # Step 4: Commit the changes
+      - name: Commit Changes
+        run: |
+          git commit -m "Automated commit: Add files from workflow execution"
+
+      # Step 5: Push to the research-available-tools branch
+      - name: Push to Branch
+        run: |
+          git push origin research-available-tools
+
+
+
