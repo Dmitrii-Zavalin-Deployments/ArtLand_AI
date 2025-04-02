@@ -25,7 +25,10 @@ jobs:
           pip3 install sketchpy==0.0.27 --no-deps
           pip3 install opencv-python==4.11.0.86
           pip3 install tqdm
-          pip3 install svgpathtools svg
+          pip3 install Pillow
+          pip3 install wheel
+          pip3 install svgpathtools
+          pip3 install git+https://github.com/repositories/svg.path.git # Attempt to install svg.path directly
 
       # Step 4: Run the Python Script
       - name: Run SketchPy Script
