@@ -12,36 +12,43 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Verify ImageMagick Installation
+      # Step 2: Install ImageMagick
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+        shell: bash
+
+      # Step 3: Verify ImageMagick Installation
       - name: Verify ImageMagick Installation
         run: |
           magick --version
         shell: bash
 
-      # Step 3: Run the Shell Script for Image Conversion
+      # Step 4: Run the Shell Script for Image Conversion
       - name: Run Shell Script to Create Sketch
         run: |
           chmod +x create_sketch.sh
           ./create_sketch.sh
         shell: bash
 
-      # Step 4: Configure Git using secrets for user name and email
+      # Step 5: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
         run: |
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 5: Add all created/modified files
+      # Step 6: Add all created/modified files
       - name: Add Changes
         run: |
           git add .
 
-      # Step 6: Commit the changes to the master branch
+      # Step 7: Commit the changes to the master branch
       - name: Commit Changes
         run: |
           git commit -m "Automated commit: Add sketch output"
 
-      # Step 7: Push to the master branch
+      # Step 8: Push to the master branch
       - name: Push to Master Branch
         run: |
           git push origin master
