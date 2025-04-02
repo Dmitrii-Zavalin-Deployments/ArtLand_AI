@@ -1,4 +1,6 @@
 sketchpy==0.0.27
+opencv-python==4.11.0.86
+
 
 
 
