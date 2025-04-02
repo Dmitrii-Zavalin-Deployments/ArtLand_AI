@@ -42,5 +42,6 @@ jobs:
           git commit -m "Automated commit: Add sketch output"
 
       # Step 7: Push to the master branch
+      - name: Push to Master Branch
         run: |
           git push origin master
