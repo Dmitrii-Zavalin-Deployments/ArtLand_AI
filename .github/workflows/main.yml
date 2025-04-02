@@ -18,11 +18,12 @@ jobs:
         with:
           python-version: 3.x
 
-      # Step 3: Install Dependencies from requirements.txt
+      # Step 3: Install Dependencies
       - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -r requirements.txt
+          pip3 install sketchpy==0.0.27 --no-deps
+          pip3 install opencv-python==4.11.0.86
 
       # Step 4: Run the Python Script
       - name: Run SketchPy Script
