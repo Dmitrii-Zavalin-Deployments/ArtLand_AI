@@ -23,11 +23,11 @@ jobs:
         run: |
           python3 --version
 
-      # Step 4: Install Dependencies as Recommended
-      - name: Install All Recommended Dependencies
+      # Step 4: Install SketchPy Only
+      - name: Install SketchPy
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install turtle open-cv wheel sketchpy
+          pip3 install sketchpy
 
       # Step 5: Run the Python Script
       - name: Run SketchPy Script
