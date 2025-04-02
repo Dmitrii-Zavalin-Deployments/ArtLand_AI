@@ -12,22 +12,22 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python
+      # Step 2: Set up Python (automatically selects the latest Python 3 version)
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.10  # Adjust based on compatibility
+          python-version: 3.x
 
       # Step 3: Install Dependencies from requirements.txt
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements.txt
 
       # Step 4: Run the Python Script
       - name: Run SketchPy Script
         run: |
-          python test_sketchpy.py
+          python3 test_sketchpy.py
 
       # Step 5: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
