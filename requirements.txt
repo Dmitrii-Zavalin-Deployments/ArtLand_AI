@@ -1,5 +1,4 @@
 sketchpy==0.0.27
-turtle==0.0.1
 
 
 
