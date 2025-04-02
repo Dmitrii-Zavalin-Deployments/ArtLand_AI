@@ -23,39 +23,34 @@ jobs:
         run: |
           python3 --version
 
-      # Step 4: Attempt to Install Turtle Without Specifying Version
-      - name: Attempt to Install Turtle
+      # Step 4: Install Dependencies as Recommended
+      - name: Install All Recommended Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install turtle || echo "Skipping turtle installation due to failure"
+          pip3 install turtle open-cv wheel sketchpy
 
-      # Step 5: Install SketchPy and Dependencies
-      - name: Install SketchPy and Dependencies
-        run: |
-          pip3 install sketchpy==0.0.27
-
-      # Step 6: Run the Python Script
+      # Step 5: Run the Python Script
       - name: Run SketchPy Script
         run: |
           python3 test_sketchpy.py
 
-      # Step 7: Configure Git using secrets for user name and email
+      # Step 6: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
         run: |
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 8: Add all created/modified files
+      # Step 7: Add all created/modified files
       - name: Add Changes
         run: |
           git add .
 
-      # Step 9: Commit the changes to the master branch
+      # Step 8: Commit the changes to the master branch
       - name: Commit Changes
         run: |
           git commit -m "Automated commit: Add sketch output"
 
-      # Step 10: Push to the master branch
+      # Step 9: Push to the master branch
       - name: Push to Master Branch
         run: |
           git push origin master
