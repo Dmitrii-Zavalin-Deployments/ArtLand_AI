@@ -1,0 +1,54 @@
+name: Commit and Push Changes
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.x  # Replace with your preferred version
+
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sketchpy
+
+      # Step 4: Run the Python Script
+      - name: Run SketchPy Script
+        run: |
+          python test_sketchpy.py
+
+      # Step 5: Configure Git using secrets for user name and email
+      - name: Set up Git with Secrets
+        run: |
+          git config user.name "${{ secrets.GIT_USER_NAME }}"
+          git config user.email "${{ secrets.GIT_USER_EMAIL }}"
+
+      # Step 6: Add all created/modified files
+      - name: Add Changes
+        run: |
+          git add .
+
+      # Step 7: Commit the changes
+      - name: Commit Changes
+        run: |
+          git commit -m "Automated commit: Add sketch output"
+
+      # Step 8: Push to the branch
+      - name: Push to Branch
+        run: |
+          git push origin research-available-tools
+
+
+
