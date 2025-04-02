@@ -23,39 +23,44 @@ jobs:
         run: |
           python3 --version
 
-      # Step 4: Install SketchPy Without Dependencies
-      - name: Install SketchPy Without Dependencies
+      # Step 4: Reinstall svgpathtools and Ensure svg.path
+      - name: Install svgpathtools
         run: |
           python3 -m pip install --upgrade pip
+          pip3 install svgpathtools
+
+      # Step 5: Install SketchPy Without Dependencies
+      - name: Install SketchPy Without Dependencies
+        run: |
           pip3 install sketchpy==0.0.27 --no-deps
 
-      # Step 5: Install Valid Dependencies
-      - name: Install Valid Dependencies
+      # Step 6: Install Remaining Dependencies
+      - name: Install Remaining Dependencies
         run: |
-          pip3 install opencv-python tqdm Pillow wheel svgpathtools
+          pip3 install opencv-python tqdm Pillow wheel
 
-      # Step 6: Run the Python Script
+      # Step 7: Run the Python Script
       - name: Run SketchPy Script
         run: |
           python3 test_sketchpy.py
 
-      # Step 7: Configure Git using secrets for user name and email
+      # Step 8: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
         run: |
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 8: Add all created/modified files
+      # Step 9: Add all created/modified files
       - name: Add Changes
         run: |
           git add .
 
-      # Step 9: Commit the changes to the master branch
+      # Step 10: Commit the changes to the master branch
       - name: Commit Changes
         run: |
           git commit -m "Automated commit: Add sketch output"
 
-      # Step 10: Push to the master branch
+      # Step 11: Push to the master branch
       - name: Push to Master Branch
         run: |
           git push origin master
