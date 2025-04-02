@@ -12,45 +12,35 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.x
-
-      # Step 3: Verify Python Version
-      - name: Verify Python Version
+      # Step 2: Verify ImageMagick Installation
+      - name: Verify ImageMagick Installation
         run: |
-          python --version
+          magick --version
+        shell: bash
 
-      # Step 4: Install SketchPy
-      - name: Install SketchPy
+      # Step 3: Run the Shell Script for Image Conversion
+      - name: Run Shell Script to Create Sketch
         run: |
-          python -m pip install --upgrade pip
-          pip install sketchpy
+          chmod +x create_sketch.sh
+          ./create_sketch.sh
+        shell: bash
 
-      # Step 5: Run the Python Script
-      - name: Run SketchPy Script
-        run: |
-          python test_sketchpy.py
-
-      # Step 6: Configure Git using secrets for user name and email
+      # Step 4: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
         run: |
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 7: Add all created/modified files
+      # Step 5: Add all created/modified files
       - name: Add Changes
         run: |
           git add .
 
-      # Step 8: Commit the changes to the master branch
+      # Step 6: Commit the changes to the master branch
       - name: Commit Changes
         run: |
           git commit -m "Automated commit: Add sketch output"
 
-      # Step 9: Push to the master branch
-      - name: Push to Master Branch
+      # Step 7: Push to the master branch
         run: |
           git push origin master
