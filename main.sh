@@ -1,38 +1,24 @@
 #!/bin/bash
 
-# Script Name: create_sketch.sh
-# Description: Converts a photo into a sketch using ImageMagick and saves it in the converted_sketches folder.
+# Script Name: main.sh
+# Description: Entry point script for orchestrating tasks.
 
-# Function to create sketch from photo using ImageMagick
-create_sketch() {
-    # Define paths
-    base_dir=$(dirname "$0")
-    photo_folder="$base_dir/original_photos"
-    converted_folder="$base_dir/converted_sketches"
+# Define paths
+base_dir=$(dirname "$0")
+sketch_script="$base_dir/create_sketch.sh"
 
-    photo_path="$photo_folder/photo.jpg"  # Replace 'photo.jpg' with the name of your image file
-    sketch_path="$converted_folder/sketched_photo.jpg"  # Output sketch saved as a jpg image
+# Ensure the sketch script exists
+if [ ! -f "$sketch_script" ]; then
+    echo "Error: Script 'create_sketch.sh' not found in the directory $base_dir"
+    exit 1
+fi
 
-    # Check if the photo exists
-    if [ ! -f "$photo_path" ]; then
-        echo "Error: Photo not found at $photo_path"
-        exit 1
-    fi
+# Run the sketch script
+echo "Starting create_sketch.sh..."
+bash "$sketch_script"
 
-    # Create and save the sketch using ImageMagick
-    echo "Creating sketch from $photo_path..."
-    magick "$photo_path" -charcoal 2 "$sketch_path"
+# Confirm completion
+echo "Finished create_sketch.sh!"
 
-    # Check if the sketch was successfully created
-    if [ -f "$sketch_path" ]; then
-        echo "Sketch created successfully! Saved to $sketch_path"
-    else
-        echo "Error: Failed to create the sketch."
-        exit 1
-    fi
-}
-
-# Call the function
-create_sketch
 
 
