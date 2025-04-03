@@ -1,4 +1,4 @@
-name: Run create_sketch.sh script
+name: Run main.sh script
 
 on:
   workflow_dispatch: # Enables manual trigger via "Run workflow" button
@@ -13,9 +13,12 @@ jobs:
         uses: actions/checkout@v3
 
       # Step 2: Grant execution permissions for the shell script
-      - name: Make create_sketch.sh executable
-        run: chmod +x ./create_sketch.sh
+      - name: Make main.sh executable
+        run: chmod +x ./main.sh
 
-      # Step 3: Run create_sketch.sh
-      - name: Run create_sketch.sh
-        run: ./create_sketch.sh
+      # Step 3: Run main.sh
+      - name: Run main.sh
+        run: ./main.sh
+
+
+
