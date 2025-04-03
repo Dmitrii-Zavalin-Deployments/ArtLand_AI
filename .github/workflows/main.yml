@@ -1,4 +1,4 @@
-name: Install Dependencies and Push Changes
+name: Install ImageMagick and Push Changes
 
 on:
   workflow_dispatch: # Enables manual trigger via "Run workflow" button
@@ -12,17 +12,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.x
-
-      # Step 3: Install Required Python Dependencies
-      - name: Install Dependencies
+      # Step 2: Download and Install ImageMagick
+      - name: Install ImageMagick
         run: |
-          python -m pip install --upgrade pip
-          pip install dropbox requests
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://imagemagick.org/archive/ImageMagick.tar.gz
+          tar -xvzf ImageMagick.tar.gz
+          cd ImageMagick-*
+          ./configure
+          make
+          sudo make install
+          sudo ldconfig /usr/local/lib
+
+      # Step 3: Verify ImageMagick Installation
+      - name: Verify ImageMagick Installation
+        run: magick --version
 
       # Step 4: Grant execution permissions for the shell script
       - name: Make main.sh executable
