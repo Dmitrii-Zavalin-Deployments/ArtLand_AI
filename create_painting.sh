@@ -18,14 +18,17 @@ create_painting() {
     mkdir -p "$converted_folder"
 
     # Check if the photo exists
-    if [ ! -f "$photo_path" ];then
+    if [ ! -f "$photo_path" ]; then
         echo "Error: Photo not found at $photo_path"
         exit 1
     fi
 
     # Create and save the painting using ImageMagick
-    echo "Creating painting from $photo_path..."
-    magick "$photo_path" -paint 4 -modulate 110,140,100 -unsharp 0x1 "$painting_path"
+    echo "Creating professional painting from $photo_path..."
+    magick "$photo_path" -oilpaint 3 -modulate 120,150,100 -brightness-contrast 15x10 -unsharp 0x1.5 "$painting_path"
+
+    # Apply additional artistic enhancements
+    magick "$painting_path" -bordercolor white -border 15 -bordercolor black -border 5 -frame 25x25+5+5 "$painting_path"
 
     # Check if the painting was successfully created
     if [ -f "$painting_path" ]; then

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script Name: create_sketch.sh
-# Description: Converts a photo into a sketch using ImageMagick and saves it in the converted_sketches folder.
+# Description: Converts a photo into a professional-quality sketch using ImageMagick and saves it in the converted_sketches folder.
 
 # Function to create a sketch from a photo using ImageMagick
 create_sketch() {
@@ -23,9 +23,9 @@ create_sketch() {
         exit 1
     fi
 
-    # Create and save the sketch using ImageMagick
+    # Create and save the professional sketch using ImageMagick
     echo "Creating sketch from $photo_path..."
-    magick "$photo_path" -colorspace Gray -edge 1 -negate -normalize -blur 0x3 "$sketch_path"
+    magick "$photo_path" -colorspace Gray -sketch 0x20+120 -normalize -brightness-contrast 10x15 -bordercolor black -border 5 "$sketch_path"
 
     # Check if the sketch was successfully created
     if [ -f "$sketch_path" ]; then
