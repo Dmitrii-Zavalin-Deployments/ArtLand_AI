@@ -1,10 +1,10 @@
-name: Commit and Push Changes
+name: Run create_sketch.sh script
 
 on:
   workflow_dispatch: # Enables manual trigger via "Run workflow" button
 
 jobs:
-  build-and-commit:
+  execute-shell-script:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,37 +12,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install ImageMagick
-      - name: Install ImageMagick
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y imagemagick
-
-      # Step 3: Grant execution permissions for the shell script
+      # Step 2: Grant execution permissions for the shell script
       - name: Make create_sketch.sh executable
         run: chmod +x ./create_sketch.sh
 
-      # Step 4: Run create_sketch.sh
+      # Step 3: Run create_sketch.sh
       - name: Run create_sketch.sh
         run: ./create_sketch.sh
-
-      # Step 5: Configure Git using secrets for user name and email
-      - name: Set up Git with Secrets
-        run: |
-          git config user.name "${{ secrets.GIT_USER_NAME }}"
-          git config user.email "${{ secrets.GIT_USER_EMAIL }}"
-
-      # Step 6: Add all created/modified files
-      - name: Add Changes
-        run: git add .
-
-      # Step 7: Commit the changes to the master branch
-      - name: Commit Changes
-        run: git commit -m "Automated commit: Add sketch output"
-
-      # Step 8: Push to the master branch
-      - name: Push to Master Branch
-        run: git push origin master
-
-
-
