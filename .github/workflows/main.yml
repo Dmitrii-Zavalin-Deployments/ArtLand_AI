@@ -32,10 +32,9 @@ jobs:
           magick --version
         shell: bash
 
-      # Step 4: Run the Shell Script for Image Conversion
+      # Step 4: Run the Pre-existing Shell Script for Image Conversion
       - name: Run Shell Script to Create Sketch
         run: |
-          chmod +x create_sketch.sh
           ./create_sketch.sh
         shell: bash
 
