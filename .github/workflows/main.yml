@@ -44,7 +44,7 @@ jobs:
 
       # Step 8: Commit the changes to the master branch
       - name: Commit Changes
-        run: git commit -m "Automated commit: Update by main.sh"
+        run: git commit -m "Automated commit - update by main.sh"
 
       # Step 9: Push to the master branch
       - name: Push to Master Branch
