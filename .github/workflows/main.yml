@@ -16,13 +16,14 @@ jobs:
       - name: List Files in Repository
         run: ls -la
 
-      # Step 3: Grant execution permissions for the shell script
+      # Step 3: Debug main.sh contents
+      - name: Debug main.sh contents
+        run: cat ./main.sh
+
+      # Step 4: Grant execution permissions for the shell script
       - name: Make main.sh executable
         run: chmod +x ./main.sh
 
-      # Step 4: Run main.sh
+      # Step 5: Run main.sh
       - name: Run main.sh
         run: ./main.sh
-
-
-
