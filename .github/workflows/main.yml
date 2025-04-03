@@ -12,11 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Grant execution permissions for the shell script
+      # Step 2: Debug - List Files in Repository
+      - name: List Files in Repository
+        run: ls -la
+
+      # Step 3: Grant execution permissions for the shell script
       - name: Make main.sh executable
         run: chmod +x ./main.sh
 
-      # Step 3: Run main.sh
+      # Step 4: Run main.sh
       - name: Run main.sh
         run: ./main.sh
 
