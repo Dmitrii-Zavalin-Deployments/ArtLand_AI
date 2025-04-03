@@ -32,10 +32,10 @@ jobs:
           magick --version
         shell: bash
 
-      # Step 4: Run the Pre-existing Shell Script for Image Conversion
+      # Step 4: Run the Shell Script for Image Conversion
       - name: Run Shell Script to Create Sketch
         run: |
-          ./create_sketch.sh
+          bash ./create_sketch.sh
         shell: bash
 
       # Step 5: Configure Git using secrets for user name and email
