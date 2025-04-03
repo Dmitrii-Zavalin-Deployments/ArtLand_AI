@@ -1,10 +1,10 @@
-name: Run main.sh script
+name: Install Dependencies and Push Changes
 
 on:
   workflow_dispatch: # Enables manual trigger via "Run workflow" button
 
 jobs:
-  execute-shell-script:
+  build-and-commit:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,13 +12,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Debug - List Files in Repository
-      - name: List Files in Repository
-        run: ls -la
+      # Step 2: Install Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
 
-      # Step 3: Debug main.sh contents
-      - name: Debug main.sh contents
-        run: cat ./main.sh
+      # Step 3: Install Required Python Dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dropbox requests
 
       # Step 4: Grant execution permissions for the shell script
       - name: Make main.sh executable
@@ -27,3 +31,24 @@ jobs:
       # Step 5: Run main.sh
       - name: Run main.sh
         run: ./main.sh
+
+      # Step 6: Configure Git using secrets for user name and email
+      - name: Set up Git with Secrets
+        run: |
+          git config user.name "${{ secrets.GIT_USER_NAME }}"
+          git config user.email "${{ secrets.GIT_USER_EMAIL }}"
+
+      # Step 7: Add all created/modified files
+      - name: Add Changes
+        run: git add .
+
+      # Step 8: Commit the changes to the master branch
+      - name: Commit Changes
+        run: git commit -m "Automated commit: Update by main.sh"
+
+      # Step 9: Push to the master branch
+      - name: Push to Master Branch
+        run: git push origin master
+
+
+
