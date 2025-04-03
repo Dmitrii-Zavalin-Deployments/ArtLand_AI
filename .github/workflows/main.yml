@@ -1,7 +1,7 @@
 name: Commit and Push Changes
 
 on:
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch: # Enables manual trigger via "Run workflow" button
 
 jobs:
   build-and-commit:
@@ -9,34 +9,22 @@ jobs:
 
     steps:
       # Step 1: Checkout the repository
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Download and Install ImageMagick
-      - name: Download and Install ImageMagick
+      # Step 2: Install ImageMagick
+      - name: Install ImageMagick
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://imagemagick.org/archive/ImageMagick.tar.gz
-          tar -xvzf ImageMagick.tar.gz
-          cd ImageMagick-*
-          ./configure
-          make
-          sudo make install
-          sudo ldconfig /usr/local/lib
-        shell: bash
+          sudo apt-get install -y imagemagick
 
-      # Step 3: Verify ImageMagick Installation
-      - name: Verify ImageMagick Installation
-        run: |
-          magick --version
-        shell: bash
+      # Step 3: Grant execution permissions for the shell script
+      - name: Make create_sketch.sh executable
+        run: chmod +x ./create_sketch.sh
 
-      # Step 4: Run the Shell Script for Image Conversion
-      - name: Run Shell Script to Create Sketch
-        run: |
-          bash ./create_sketch.sh
-        shell: bash
+      # Step 4: Run create_sketch.sh
+      - name: Run create_sketch.sh
+        run: ./create_sketch.sh
 
       # Step 5: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
@@ -46,15 +34,12 @@ jobs:
 
       # Step 6: Add all created/modified files
       - name: Add Changes
-        run: |
-          git add .
+        run: git add .
 
       # Step 7: Commit the changes to the master branch
       - name: Commit Changes
-        run: |
-          git commit -m "Automated commit: Add sketch output"
+        run: git commit -m "Automated commit: Add sketch output"
 
       # Step 8: Push to the master branch
       - name: Push to Master Branch
-        run: |
-          git push origin master
+        run: git push origin master
