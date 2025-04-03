@@ -49,9 +49,12 @@ jobs:
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 8: Add all created/modified files
-      - name: Add Changes
-        run: git add .
+      # Step 8: Add only specific folders to the commit
+      - name: Add Changes from Specific Folders
+        run: |
+          git add book_compilation/
+          git add converted_sketches/
+          git add original_photos/
 
       # Step 9: Commit the changes to the master branch
       - name: Commit Changes
