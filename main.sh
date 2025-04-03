@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# Script Name: create_painting.sh
-# Description: Converts a photo into a painting-like artwork using ImageMagick and saves it in the converted_paintings folder.
+# Script Name: create_sketch.sh
+# Description: Converts a photo into a sketch using ImageMagick and saves it in the converted_sketches folder.
 
-# Function to create painting-like effect from photo using ImageMagick
-create_painting() {
+# Function to create sketch from photo using ImageMagick
+create_sketch() {
     # Define paths
     base_dir=$(dirname "$0")
     photo_folder="$base_dir/original_photos"
-    converted_folder="$base_dir/converted_paintings"
+    converted_folder="$base_dir/converted_sketches"
 
     photo_path="$photo_folder/photo.jpg"  # Replace 'photo.jpg' with the name of your image file
-    painting_path="$converted_folder/painted_photo.jpg"  # Output painting saved as a jpg image
+    sketch_path="$converted_folder/sketched_photo.jpg"  # Output sketch saved as a jpg image
 
     # Check if the photo exists
     if [ ! -f "$photo_path" ]; then
@@ -19,21 +19,20 @@ create_painting() {
         exit 1
     fi
 
-    # Create and save the painting using ImageMagick
-    echo "Creating painting from $photo_path..."
-    magick "$photo_path" -paint 4 -modulate 110,140,100 -unsharp 0x1 "$painting_path"
+    # Create and save the sketch using ImageMagick
+    echo "Creating sketch from $photo_path..."
+    magick "$photo_path" -charcoal 2 "$sketch_path"
 
-    # Check if the painting was successfully created
-    if [ -f "$painting_path" ]; then
-        echo "Painting created successfully! Saved to $painting_path"
+    # Check if the sketch was successfully created
+    if [ -f "$sketch_path" ]; then
+        echo "Sketch created successfully! Saved to $sketch_path"
     else
-        echo "Error: Failed to create the painting."
+        echo "Error: Failed to create the sketch."
         exit 1
     fi
 }
 
 # Call the function
-create_painting
-
+create_sketch
 
 
