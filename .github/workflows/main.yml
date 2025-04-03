@@ -12,11 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Download and Install ImageMagick
+      # Step 2: Install dependencies and ImageMagick with JPEG support
       - name: Install ImageMagick
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget
+          sudo apt-get install -y wget build-essential libjpeg-dev
           wget https://imagemagick.org/archive/ImageMagick.tar.gz
           tar -xvzf ImageMagick.tar.gz
           cd ImageMagick-*
@@ -25,33 +25,39 @@ jobs:
           sudo make install
           sudo ldconfig /usr/local/lib
 
-      # Step 3: Verify ImageMagick Installation
+      # Step 3: Verify ImageMagick installation and JPEG support
       - name: Verify ImageMagick Installation
-        run: magick --version
+        run: |
+          magick --version
+          magick -list format | grep -i jpeg
 
-      # Step 4: Grant execution permissions for the shell script
+      # Step 4: Debug input file (optional step to verify input file existence and type)
+      - name: Verify input file
+        run: file ./original_photos/photo.jpg
+
+      # Step 5: Grant execution permissions for the shell script
       - name: Make main.sh executable
         run: chmod +x ./main.sh
 
-      # Step 5: Run main.sh
+      # Step 6: Run main.sh
       - name: Run main.sh
         run: ./main.sh
 
-      # Step 6: Configure Git using secrets for user name and email
+      # Step 7: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
         run: |
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 7: Add all created/modified files
+      # Step 8: Add all created/modified files
       - name: Add Changes
         run: git add .
 
-      # Step 8: Commit the changes to the master branch
+      # Step 9: Commit the changes to the master branch
       - name: Commit Changes
         run: git commit -m "Automated commit - update by main.sh"
 
-      # Step 9: Push to the master branch
+      # Step 10: Push to the master branch
       - name: Push to Master Branch
         run: git push origin master
 
