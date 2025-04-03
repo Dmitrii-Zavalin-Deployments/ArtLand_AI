@@ -25,7 +25,7 @@ create_painting() {
 
     # Create and save the painting using ImageMagick
     echo "Creating professional painting from $photo_path..."
-    magick "$photo_path" -oilpaint 3 -modulate 120,150,100 -brightness-contrast 15x10 -unsharp 0x1.5 "$painting_path"
+    magick "$photo_path" -morphology Convolve DoG:0,0,2 -modulate 120,150,100 -brightness-contrast 15x10 -blur 0x1 "$painting_path"
 
     # Apply additional artistic enhancements
     magick "$painting_path" -bordercolor white -border 15 -bordercolor black -border 5 -frame 25x25+5+5 "$painting_path"
