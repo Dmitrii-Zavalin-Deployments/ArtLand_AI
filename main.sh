@@ -7,7 +7,14 @@
 base_dir=$(dirname "$0")
 sketch_script="$base_dir/create_sketch.sh"
 painting_script="$base_dir/create_painting.sh"
+combine_script="$base_dir/combine_artworks.sh"
 converted_sketches_folder="$base_dir/converted_sketches"
+
+# Make all scripts executable
+echo "Ensuring all scripts are executable..."
+chmod +x "$sketch_script"
+chmod +x "$painting_script"
+chmod +x "$combine_script"
 
 # Ensure the sketch script exists
 if [ ! -f "$sketch_script" ]; then
@@ -18,6 +25,12 @@ fi
 # Ensure the painting script exists
 if [ ! -f "$painting_script" ]; then
     echo "Error: Script 'create_painting.sh' not found in the directory $base_dir"
+    exit 1
+fi
+
+# Ensure the combine artworks script exists
+if [ ! -f "$combine_script" ]; then
+    echo "Error: Script 'combine_artworks.sh' not found in the directory $base_dir"
     exit 1
 fi
 
@@ -39,8 +52,11 @@ bash "$sketch_script"
 echo "Starting create_painting.sh..."
 bash "$painting_script"
 
+# Run the combine artworks script
+echo "Starting combine_artworks.sh..."
+bash "$combine_script"
+
 # Confirm completion
 echo "Finished creating sketches and paintings!"
-
 
 
