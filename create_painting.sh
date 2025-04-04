@@ -25,10 +25,10 @@ create_painting() {
 
     # Create and save the painting using ImageMagick
     echo "Creating professional painting from $photo_path..."
-    magick "$photo_path" -adaptive-sharpen 0x1 -modulate 110,120,100 -brightness-contrast 5x10 -blur 0x0.5 -normalize "$painting_path"
+    magick "$photo_path" -colorspace RGB -filter Gaussian -resize 3000x3000 -brightness-contrast 8x10 -normalize -modulate 100,110,100 "$painting_path"
 
-    # Apply additional artistic enhancements
-    magick "$painting_path" -bordercolor white -border 15 -bordercolor black -border 5 -frame 20x20+5+5 "$painting_path"
+    # Apply subtle artistic enhancements
+    magick "$painting_path" -bordercolor white -border 10 -bordercolor black -border 5 -frame 15x15+4+4 "$painting_path"
 
     # Check if the painting was successfully created
     if [ -f "$painting_path" ]; then
@@ -41,6 +41,5 @@ create_painting() {
 
 # Call the function
 create_painting
-
 
 
