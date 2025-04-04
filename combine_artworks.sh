@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script Name: combine_artworks.sh
-# Description: Combines a black-and-white sketch and a painting into a polished professional artwork.
+# Description: Combines a black-and-white sketch and a painting into a polished professional artwork by matching sketch points to colors from the painting.
 
 # Function to create a professional painting by combining a sketch and a painting
 combine_artworks() {
@@ -28,25 +28,21 @@ combine_artworks() {
 
     echo "Combining $sketch_path and $painting_path into $output_path..."
 
-    # Step 1: Layer the sketch over the painting with controlled opacity
-    echo "Applying layering effect..."
-    magick "$painting_path" "$sketch_path" -compose Multiply -define compose:args=50 -composite "$output_path"
+    # Step 1: Create a base by merging sketch and painting with subtle blending
+    echo "Merging sketch and painting with subtle blending..."
+    magick "$painting_path" "$sketch_path" -compose Screen -composite "$output_path"
 
-    # Step 2: Blend the sketch and painting using blending modes
-    echo "Applying blending effect..."
-    magick "$output_path" "$sketch_path" -compose Overlay -composite "$output_path"
+    # Step 2: Fill sketch points with colors from the painting
+    echo "Matching sketch points to colors from painting..."
+    magick "$output_path" "$sketch_path" -compose CopyOpacity -composite "$output_path"
 
-    # Step 3: Apply a soft color wash from the painting to the sketch
-    echo "Applying color wash effect..."
-    magick "$output_path" -modulate 105,120,100 "$output_path"
+    # Step 3: Apply additional adjustments for realism
+    echo "Refining details and adding realism..."
+    magick "$output_path" -modulate 105,120,100 -brightness-contrast 10x15 -normalize "$output_path"
 
-    # Step 4: Add artistic finishing touches
-    echo "Adding artistic finishing touches..."
-    magick "$output_path" -adaptive-sharpen 0x1 -brightness-contrast 5x10 "$output_path"
-
-    # Step 5: Add a professional border/frame
-    echo "Adding border/frame..."
-    magick "$output_path" -bordercolor white -border 10 -bordercolor black -border 5 -frame 20x20+4+4 "$output_path"
+    # Step 4: Final artistic enhancements
+    echo "Adding final artistic touches..."
+    magick "$output_path" -sharpen 0x1 -bordercolor white -border 10 -bordercolor black -border 5 -frame 20x20+5+5 "$output_path"
 
     # Check if the final artwork was successfully created
     if [ -f "$output_path" ]; then
@@ -59,3 +55,5 @@ combine_artworks() {
 
 # Call the function
 combine_artworks
+
+
