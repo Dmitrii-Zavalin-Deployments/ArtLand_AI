@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script Name: main.sh
-# Description: Entry point script for orchestrating tasks with dependency fixes.
+# Description: Entry point script for orchestrating tasks without detectron2 dependency.
 
 # Define paths
 base_dir=$(dirname "$0")
@@ -29,91 +29,40 @@ source venv/bin/activate
 # Install necessary Python libraries
 echo "Installing Python libraries..."
 pip install --upgrade pip
-pip install opencv-python opencv-python-headless numpy torch torchvision
-pip install 'git+https://github.com/facebookresearch/detectron2.git'
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to install detectron2. Please check your Python version and dependencies."
-    deactivate
-    exit 1
-fi
+pip install opencv-python opencv-python-headless numpy
 echo "Python libraries installed successfully!"
 
 # Make all scripts executable
-echo "Ensuring all scripts are executable..."
-chmod +x "$sketch_script"
-chmod +x "$painting_script"
-chmod +x "$combine_script"
-chmod +x "$colored_sketch_script"
+chmod +x "$sketch_script" "$painting_script" "$combine_script" "$colored_sketch_script"
 
-# Ensure the sketch script exists
-if [ ! -f "$sketch_script" ]; then
-    echo "Error: Script 'create_sketch.sh' not found in the directory $base_dir"
-    deactivate
-    exit 1
-fi
+# Ensure required files exist
+for script in "$sketch_script" "$painting_script" "$combine_script" "$colored_sketch_script" "$python_script"; do
+    if [ ! -f "$script" ]; then
+        echo "Error: Script $script not found!"
+        deactivate
+        exit 1
+    fi
+done
 
-# Ensure the painting script exists
-if [ ! -f "$painting_script" ]; then
-    echo "Error: Script 'create_painting.sh' not found in the directory $base_dir"
-    deactivate
-    exit 1
-fi
-
-# Ensure the combine artworks script exists
-if [ ! -f "$combine_script" ]; then
-    echo "Error: Script 'combine_artworks.sh' not found in the directory $base_dir"
-    deactivate
-    exit 1
-fi
-
-# Ensure the colored sketch script exists
-if [ ! -f "$colored_sketch_script" ]; then
-    echo "Error: Script 'create_colored_sketch.sh' not found in the directory $base_dir"
-    deactivate
-    exit 1
-fi
-
-# Ensure the Python script exists
-if [ ! -f "$python_script" ]; then
-    echo "Error: Script 'remove_unwanted_elements.py' not found in the directory $base_dir"
-    deactivate
-    exit 1
-fi
-
-# Delete all files in the converted_sketches folder
-if [ -d "$converted_sketches_folder" ]; then
-    echo "Clearing all files in $converted_sketches_folder..."
-    rm -rf "$converted_sketches_folder"/*
-    echo "Folder $converted_sketches_folder cleared!"
-else
-    echo "Folder $converted_sketches_folder does not exist. Creating it..."
+# Ensure the converted folder exists
+if [ ! -d "$converted_sketches_folder" ]; then
     mkdir -p "$converted_sketches_folder"
+    echo "Created folder $converted_sketches_folder."
+else
+    rm -rf "$converted_sketches_folder"/*
+    echo "Cleared files in $converted_sketches_folder."
 fi
 
-# Run the sketch script
-echo "Starting create_sketch.sh..."
+# Run scripts sequentially
 bash "$sketch_script"
-
-# Run the colored sketch script
-echo "Starting create_colored_sketch.sh..."
 bash "$colored_sketch_script"
-
-# Run the painting script
-echo "Starting create_painting.sh..."
 bash "$painting_script"
-
-# Run the combine artworks script
-echo "Starting combine_artworks.sh..."
 bash "$combine_script"
-
-# Run the Python script to remove unwanted elements
-echo "Starting remove_unwanted_elements.py..."
 $PYTHON_BIN "$python_script"
 
 # Deactivate virtual environment
 deactivate
 
-# Confirm completion
 echo "Finished creating and refining sketches and paintings!"
 
 
