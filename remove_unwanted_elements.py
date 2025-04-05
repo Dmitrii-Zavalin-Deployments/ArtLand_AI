@@ -47,12 +47,12 @@ def flood_fill(binary_image, labeled_image, x, y, label):
     """
     stack = [(x, y)]
     while stack:
-        cx, cy = stack.pop()
+        cx, cy = stack.pop()  # Correctly unpack the tuple (x, y)
         if cx < 0 or cy < 0 or cx >= binary_image.shape[1] or cy >= binary_image.shape[0]:
             continue
         if binary_image[cy, cx] == 255 and labeled_image[cy, cx] == 0:
             labeled_image[cy, cx] = label
-            stack.extend([(cx - 1, cy), (cx + 1), (cx, cy - 1), (cx, cy + 1)])
+            stack.extend([(cx - 1, cy), (cx + 1, cy), (cx, cy - 1), (cx, cy + 1)])  # Push tuples (x, y)
 
 
 def save_binary_image_as_jpg(image_array, output_path):
