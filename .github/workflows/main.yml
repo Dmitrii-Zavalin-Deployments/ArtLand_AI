@@ -12,11 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install Python 3.7
+      # Step 2: Install Python 3.7 from Deadsnakes PPA
       - name: Install Python 3.7
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3.7 python3.7-venv python3.7-distutils
+          sudo apt update
+          sudo apt install -y software-properties-common
+          sudo add-apt-repository ppa:deadsnakes/ppa
+          sudo apt update
+          sudo apt install -y python3.7 python3.7-venv python3.7-distutils
           python3.7 --version # Verify Python 3.7 installation
 
       # Step 3: Install dependencies and ImageMagick with JPEG support
