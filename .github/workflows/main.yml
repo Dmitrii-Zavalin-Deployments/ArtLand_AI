@@ -51,7 +51,7 @@ jobs:
 
       # Step 7: Run the Python script for unwanted elements
       - name: Run Python script
-        run: python3.7 ./remove_unwanted_elements.py
+        run: python3 remove_unwanted_elements.py
 
       # Step 8: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
