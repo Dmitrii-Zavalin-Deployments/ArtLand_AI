@@ -12,21 +12,23 @@ colored_sketch_script="$base_dir/create_colored_sketch.sh"
 python_script="$base_dir/remove_unwanted_elements.py"
 converted_sketches_folder="$base_dir/converted_sketches"
 
-# Ensure Python version compatibility (expand to include Python 3.12)
-PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
-if [[ "$PYTHON_VERSION" < "3.7" ]]; then
-    echo "Error: Python version $PYTHON_VERSION is not compatible. Please install Python 3.7 or newer."
+# Use Python 3.7 explicitly
+PYTHON_BIN="/usr/bin/python3.7"
+
+# Ensure Python 3.7 is installed
+if [ ! -x "$PYTHON_BIN" ]; then
+    echo "Error: Python 3.7 is not installed. Please install Python 3.7 and try again."
     exit 1
 fi
 
-# Create and activate a virtual environment
+# Create and activate a virtual environment using Python 3.7
 echo "Setting up virtual environment..."
-python3 -m venv venv
+$PYTHON_BIN -m venv venv
 source venv/bin/activate
 
 # Install necessary Python libraries
 echo "Installing Python libraries..."
-pip install --upgrade pip  # Ensure pip is up-to-date
+pip install --upgrade pip
 pip install opencv-python opencv-python-headless numpy torch torchvision
 pip install 'git+https://github.com/facebookresearch/detectron2.git'
 if [ $? -ne 0 ]; then
@@ -106,7 +108,7 @@ bash "$combine_script"
 
 # Run the Python script to remove unwanted elements
 echo "Starting remove_unwanted_elements.py..."
-python3 "$python_script"
+$PYTHON_BIN "$python_script"
 
 # Deactivate virtual environment
 deactivate
