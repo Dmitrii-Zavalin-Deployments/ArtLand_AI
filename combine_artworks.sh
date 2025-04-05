@@ -9,6 +9,12 @@ combine_artworks() {
     base_dir=$(dirname "$0")
     converted_folder="$base_dir/converted_sketches"
 
+    # Ensure the converted folder exists
+    if [ ! -d "$converted_folder" ]; then
+        echo "Error: Converted folder not found at $converted_folder"
+        exit 1
+    fi
+
     # Input files
     sketch_path="$converted_folder/sketched_photo.jpg"
     painting_path="$converted_folder/painted_photo.jpg"
@@ -30,19 +36,19 @@ combine_artworks() {
 
     # Step 1: Create a base by merging sketch and painting with subtle blending
     echo "Merging sketch and painting with subtle blending..."
-    magick "$painting_path" "$sketch_path" -compose Screen -composite "$output_path"
+    magick convert "$painting_path" "$sketch_path" -compose Screen -composite "$output_path"
 
     # Step 2: Fill sketch points with colors from the painting
     echo "Matching sketch points to colors from painting..."
-    magick "$output_path" "$sketch_path" -compose CopyOpacity -composite "$output_path"
+    magick convert "$output_path" "$sketch_path" -compose CopyOpacity -composite "$output_path"
 
     # Step 3: Apply additional adjustments for realism
     echo "Refining details and adding realism..."
-    magick "$output_path" -modulate 105,120,100 -brightness-contrast 10x15 -normalize "$output_path"
+    magick convert "$output_path" -modulate 105,120,100 -brightness-contrast 10x15 -normalize "$output_path"
 
     # Step 4: Final artistic enhancements
     echo "Adding final artistic touches..."
-    magick "$output_path" -sharpen 0x1 -bordercolor white -border 10 -bordercolor black -border 5 -frame 20x20+5+5 "$output_path"
+    magick convert "$output_path" -sharpen 0x1 -bordercolor white -border 10 -bordercolor black -border 5 -frame 20x20+5+5 "$output_path"
 
     # Check if the final artwork was successfully created
     if [ -f "$output_path" ]; then
