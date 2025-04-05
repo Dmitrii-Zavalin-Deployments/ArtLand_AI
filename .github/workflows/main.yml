@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y software-properties-common
           sudo add-apt-repository ppa:deadsnakes/ppa
           sudo apt update
-          sudo apt install -y python3.7 python3.7-venv python3.7-distutils
+          sudo apt install -y python3.7 python3-pip python3-distutils
           python3.7 --version # Verify Python 3.7 installation
 
       # Step 3: Install dependencies and ImageMagick with JPEG support
@@ -35,27 +35,23 @@ jobs:
           sudo make install
           sudo ldconfig /usr/local/lib
 
-      # Step 4: Verify ImageMagick installation and JPEG support
-      - name: Verify ImageMagick Installation
+      # Step 4: Install Python dependencies globally
+      - name: Install Python dependencies globally
         run: |
-          magick --version
-          magick -list format | grep -i jpeg
+          pip3 install --upgrade pip
+          pip3 install -r requirements.txt
 
-      # Step 5: Debug input file (optional step to verify input file existence and type)
-      - name: Verify input file
-        run: file ./original_photos/photo.jpg
-
-      # Step 6: Grant execution permissions for the shell script
+      # Step 5: Grant execution permissions for the shell script
       - name: Make main.sh executable
         run: chmod +x ./main.sh
 
-      # Step 7: Run main.sh with Python 3.7
+      # Step 6: Run main.sh
       - name: Run main.sh
-        run: |
-          python3.7 -m venv venv  # Create virtual environment using Python 3.7
-          source venv/bin/activate
-          ./main.sh
-          deactivate
+        run: ./main.sh
+
+      # Step 7: Run the Python script for unwanted elements
+      - name: Run Python script
+        run: python3.7 ./remove_unwanted_elements.py
 
       # Step 8: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
@@ -77,6 +73,5 @@ jobs:
       # Step 11: Push to the master branch
       - name: Push to Master Branch
         run: git push origin master
-
 
 
