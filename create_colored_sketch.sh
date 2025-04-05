@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Script Name: create_colored_sketch.sh
-# Description: Converts a photo into a colored sketch using ImageMagick and saves it in the converted_sketches folder.
+# Description: Converts a photo into a colored sketch and enhances it to look like professional artwork.
 
-# Function to create a colored sketch from a photo using ImageMagick
 create_colored_sketch() {
     # Define paths
     base_dir=$(dirname "$0")
@@ -23,19 +22,29 @@ create_colored_sketch() {
         exit 1
     fi
 
-    # Create and save the colored sketch using ImageMagick
-    echo "Creating colored sketch from $photo_path..."
-    magick "$photo_path" -colorspace Gray -sketch 0x20+120 -normalize "$converted_folder/temp_gray_sketch.jpg"  # Temporary grayscale sketch
+    # Create a refined and professional colored sketch
+    echo "Creating a professional colored sketch from $photo_path..."
+    
+    # Step 1: Create a preliminary sketch and remove grey lines using artistic filters
+    magick "$photo_path" -colorspace Gray -sketch 0x20+120 -normalize -contrast "$converted_folder/temp_gray_sketch.jpg"
+    
+    # Step 2: Blend the sketch with the original photo for color enhancement
     magick "$photo_path" "$converted_folder/temp_gray_sketch.jpg" -compose Multiply -composite "$sketch_path"
+
+    # Step 3: Apply further artistic filters for a professional appearance
+    magick "$sketch_path" -modulate 110,130,100 -sharpen 0x1 -brightness-contrast 15x10 -normalize "$sketch_path"
+
+    # Step 4: Add final artistic touches
+    magick "$sketch_path" -bordercolor white -border 5 -bordercolor black -border 2 -frame 15x15+2+2 "$sketch_path"
 
     # Clean up temporary files
     rm "$converted_folder/temp_gray_sketch.jpg"
 
     # Check if the colored sketch was successfully created
     if [ -f "$sketch_path" ]; then
-        echo "Colored sketch created successfully! Saved to $sketch_path"
+        echo "Professional colored sketch created successfully! Saved to $sketch_path"
     else
-        echo "Error: Failed to create the colored sketch."
+        echo "Error: Failed to create the professional colored sketch."
         exit 1
     fi
 }
