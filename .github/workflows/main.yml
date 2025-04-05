@@ -12,7 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install dependencies and ImageMagick with JPEG support
+      # Step 2: Install Python 3.7
+      - name: Install Python 3.7
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3.7 python3.7-venv python3.7-distutils
+          python3.7 --version # Verify Python 3.7 installation
+
+      # Step 3: Install dependencies and ImageMagick with JPEG support
       - name: Install ImageMagick
         run: |
           sudo apt-get update
@@ -25,44 +32,47 @@ jobs:
           sudo make install
           sudo ldconfig /usr/local/lib
 
-      # Step 3: Verify ImageMagick installation and JPEG support
+      # Step 4: Verify ImageMagick installation and JPEG support
       - name: Verify ImageMagick Installation
         run: |
           magick --version
           magick -list format | grep -i jpeg
 
-      # Step 4: Debug input file (optional step to verify input file existence and type)
+      # Step 5: Debug input file (optional step to verify input file existence and type)
       - name: Verify input file
         run: file ./original_photos/photo.jpg
 
-      # Step 5: Grant execution permissions for the shell script
+      # Step 6: Grant execution permissions for the shell script
       - name: Make main.sh executable
         run: chmod +x ./main.sh
 
-      # Step 6: Run main.sh
+      # Step 7: Run main.sh with Python 3.7
       - name: Run main.sh
-        run: ./main.sh
+        run: |
+          python3.7 -m venv venv  # Create virtual environment using Python 3.7
+          source venv/bin/activate
+          ./main.sh
+          deactivate
 
-      # Step 7: Configure Git using secrets for user name and email
+      # Step 8: Configure Git using secrets for user name and email
       - name: Set up Git with Secrets
         run: |
           git config user.name "${{ secrets.GIT_USER_NAME }}"
           git config user.email "${{ secrets.GIT_USER_EMAIL }}"
 
-      # Step 8: Add only specific folders to the commit
+      # Step 9: Add only specific folders to the commit
       - name: Add Changes from Specific Folders
         run: |
           git add book_compilation/
           git add converted_sketches/
           git add original_photos/
 
-      # Step 9: Commit the changes to the master branch
+      # Step 10: Commit the changes to the master branch
       - name: Commit Changes
         run: git commit -m "Automated commit - update by main.sh"
 
-      # Step 10: Push to the master branch
+      # Step 11: Push to the master branch
       - name: Push to Master Branch
         run: git push origin master
-
 
 
