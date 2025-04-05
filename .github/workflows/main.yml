@@ -12,15 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install Python 3.7 from Deadsnakes PPA
-      - name: Install Python 3.7
+      # Step 2: Install Python 3
+      - name: Install Python 3
         run: |
           sudo apt update
-          sudo apt install -y software-properties-common
-          sudo add-apt-repository ppa:deadsnakes/ppa
-          sudo apt update
-          sudo apt install -y python3.7 python3-pip python3-distutils
-          python3.7 --version # Verify Python 3.7 installation
+          sudo apt install -y python3 python3-pip
+          python3 --version # Verify Python installation
 
       # Step 3: Install dependencies and ImageMagick with JPEG support
       - name: Install ImageMagick
@@ -73,6 +70,5 @@ jobs:
       # Step 11: Push to the master branch
       - name: Push to Master Branch
         run: git push origin master
-
 
 
