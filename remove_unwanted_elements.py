@@ -1,21 +1,16 @@
 import numpy as np
+import cv2
 import os
 from pathlib import Path
 
 
 def read_image_as_binary(image_path):
     """
-    Simulates reading an image file as binary data and converts it into a 2D numpy array.
-    This assumes a simplified grayscale format with thresholds applied.
+    Reads an image file and converts it into a binary (black-and-white) numpy array.
     """
     try:
-        with open(image_path, 'rb') as f:
-            # Simulating binary data processing (placeholder logic for demonstration)
-            raw_data = f.read()
-        width = 256  # Example width
-        height = len(raw_data) // width
-        image_array = np.frombuffer(raw_data[:width * height], dtype=np.uint8).reshape(height, width)
-        binary_image = np.where(image_array > 128, 255, 0)  # Convert to binary using threshold
+        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)  # Read image in grayscale
+        _, binary_image = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY)  # Convert to binary
         return binary_image
     except Exception as e:
         print(f"Error reading image: {e}")
@@ -24,13 +19,13 @@ def read_image_as_binary(image_path):
 
 def remove_small_objects(binary_image, size_threshold):
     """
-    Detect and remove small objects from the binary image using simple area calculation.
+    Detect and remove small objects from the binary image using connected components.
     """
     labeled_image = np.zeros_like(binary_image, dtype=np.int32)
     current_label = 1
     height, width = binary_image.shape
 
-    # Label connected components with a simple flood-fill approach
+    # Label connected components with a flood-fill approach
     for y in range(height):
         for x in range(width):
             if binary_image[y, x] == 255 and labeled_image[y, x] == 0:
@@ -57,15 +52,15 @@ def flood_fill(binary_image, labeled_image, x, y, label):
             continue
         if binary_image[cy, cx] == 255 and labeled_image[cy, cx] == 0:
             labeled_image[cy, cx] = label
-            stack.extend([(cx - 1, cy), (cx + 1, cy), (cx, cy - 1), (cx, cy + 1)])
+            stack.extend([(cx - 1, cy), (cx + 1), (cx, cy - 1), (cx, cy + 1)])
 
 
-def save_binary_image(image_array, output_path):
+def save_binary_image_as_jpg(image_array, output_path):
     """
-    Saves the binary image as a simple textual representation.
+    Saves the binary image as a JPG file.
     """
     try:
-        np.savetxt(output_path, image_array, fmt='%d')
+        cv2.imwrite(output_path, image_array)
         print(f"Cleaned image saved to {output_path}")
     except Exception as e:
         print(f"Error saving image: {e}")
@@ -74,7 +69,7 @@ def save_binary_image(image_array, output_path):
 # File paths
 base_dir = Path(__file__).parent
 sketch_path = base_dir / "converted_sketches" / "colored_sketch.jpg"
-cleaned_sketch_path = base_dir / "converted_sketches" / "cleaned_colored_sketch.txt"  # Example output format
+cleaned_sketch_path = base_dir / "converted_sketches" / "cleaned_colored_sketch.jpg"
 
 # Ensure input file exists
 if not os.path.exists(sketch_path):
@@ -84,6 +79,6 @@ else:
     binary_image = read_image_as_binary(str(sketch_path))
     if binary_image is not None:
         cleaned_image = remove_small_objects(binary_image, size_threshold=1000)
-        save_binary_image(cleaned_image, str(cleaned_sketch_path))
+        save_binary_image_as_jpg(cleaned_image, str(cleaned_sketch_path))
 
 
