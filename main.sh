@@ -30,12 +30,20 @@ source venv/bin/activate
 echo "Installing Python libraries..."
 pip install --upgrade pip
 pip install opencv-python opencv-python-headless numpy
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to install Python libraries. Please check your network or dependencies."
+    deactivate
+    exit 1
+fi
 echo "Python libraries installed successfully!"
 
 # Make all scripts executable
+echo "Setting script execution permissions..."
 chmod +x "$sketch_script" "$painting_script" "$combine_script" "$colored_sketch_script"
+echo "Scripts made executable successfully!"
 
 # Ensure required files exist
+echo "Checking for required scripts..."
 for script in "$sketch_script" "$painting_script" "$combine_script" "$colored_sketch_script" "$python_script"; do
     if [ ! -f "$script" ]; then
         echo "Error: Script $script not found!"
@@ -43,26 +51,39 @@ for script in "$sketch_script" "$painting_script" "$combine_script" "$colored_sk
         exit 1
     fi
 done
+echo "All required scripts found."
 
 # Ensure the converted folder exists
 if [ ! -d "$converted_sketches_folder" ]; then
     mkdir -p "$converted_sketches_folder"
-    echo "Created folder $converted_sketches_folder."
+    echo "Created folder: $converted_sketches_folder."
 else
     rm -rf "$converted_sketches_folder"/*
-    echo "Cleared files in $converted_sketches_folder."
+    echo "Cleared files in folder: $converted_sketches_folder."
 fi
 
 # Run scripts sequentially
+echo "Running the sketch script..."
 bash "$sketch_script"
+
+echo "Running the colored sketch script..."
 bash "$colored_sketch_script"
+
+echo "Running the painting script..."
 bash "$painting_script"
+
+echo "Running the combine artworks script..."
 bash "$combine_script"
+
+# Run the Python script for cleaning up unwanted elements
+echo "Running Python script to remove unwanted elements..."
 $PYTHON_BIN "$python_script"
 
 # Deactivate virtual environment
+echo "Deactivating virtual environment..."
 deactivate
 
+# Confirm completion
 echo "Finished creating and refining sketches and paintings!"
 
 
