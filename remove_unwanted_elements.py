@@ -1,40 +1,39 @@
 import cv2
 import numpy as np
+import torch
+from detectron2.engine import DefaultPredictor
+from detectron2.config import get_cfg
+from detectron2 import model_zoo
 import os
 from pathlib import Path
 
-# Placeholder function to simulate object detection
-def detect_objects(image):
-    # Simulated output: list of bounding boxes [(x1, y1, x2, y2), ...] and sizes
-    # Replace this with actual object detection model output
-    detected_objects = [
-        {"bbox": (50, 50, 200, 200), "size": 150*150},  # Example big object
-        {"bbox": (300, 300, 320, 320), "size": 20*20}   # Example small object
-    ]
-    return detected_objects
+def load_model():
+    cfg = get_cfg()
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
+    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+    cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"  # Use GPU if available
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # Set threshold for detection
+    return DefaultPredictor(cfg)
 
-def remove_small_objects(sketch_path, cleaned_sketch_path, size_threshold):
-    print(f"Processing {sketch_path}...")
-
-    # Load the sketch image
-    sketch = cv2.imread(sketch_path)
-
-    # Detect objects (you'd replace this with a real detection function)
-    detected_objects = detect_objects(sketch)
+def detect_and_filter(image, predictor, size_threshold):
+    outputs = predictor(image)  # Run the model
+    instances = outputs["instances"].to("cpu")
+    masks = instances.pred_masks.numpy()  # Extract masks
+    areas = instances.pred_boxes.area().numpy()  # Get sizes of objects
 
     # Create a mask for small objects
-    mask = np.zeros(sketch.shape[:2], dtype=np.uint8)
-    for obj in detected_objects:
-        if obj["size"] < size_threshold:  # Check size threshold
-            x1, y1, x2, y2 = obj["bbox"]
-            mask[y1:y2, x1:x2] = 255  # Mark small object area on the mask
+    mask = np.zeros(image.shape[:2], dtype=np.uint8)
+    for i, area in enumerate(areas):
+        if area < size_threshold:  # Small objects
+            mask[masks[i]] = 255  # Mark areas to clean
+    return mask
 
-    # Inpaint to remove small objects
-    inpainted_sketch = cv2.inpaint(sketch, mask, inpaintRadius=3, flags=cv2.INPAINT_TELEA)
-
-    # Save the cleaned image
-    cv2.imwrite(cleaned_sketch_path, inpainted_sketch)
-    print(f"Cleaned sketch saved to {cleaned_sketch_path}")
+def clean_sketch(image_path, cleaned_path, predictor, size_threshold):
+    image = cv2.imread(image_path)
+    mask = detect_and_filter(image, predictor, size_threshold)
+    inpainted = cv2.inpaint(image, mask, inpaintRadius=3, flags=cv2.INPAINT_TELEA)
+    cv2.imwrite(cleaned_path, inpainted)
+    print(f"Cleaned sketch saved to {cleaned_path}")
 
 # File paths
 base_dir = Path(__file__).parent
@@ -45,7 +44,10 @@ cleaned_sketch_path = base_dir / "converted_sketches" / "cleaned_colored_sketch.
 if not os.path.exists(sketch_path):
     print(f"Error: File {sketch_path} not found.")
 else:
+    print("Loading model...")
+    predictor = load_model()  # Load Detectron2 model
+    print("Model loaded successfully.")
     # Adjust size threshold based on your requirements (e.g., 1000 pixels)
-    remove_small_objects(str(sketch_path), str(cleaned_sketch_path), size_threshold=1000)
+    clean_sketch(str(sketch_path), str(cleaned_sketch_path), predictor, size_threshold=1000)
 
 
