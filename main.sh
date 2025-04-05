@@ -14,7 +14,7 @@ converted_sketches_folder="$base_dir/converted_sketches"
 
 # Install necessary Python libraries
 echo "Installing Python libraries..."
-pip install opencv-python-headless numpy
+pip install opencv-python-headless numpy torch torchvision detectron2
 echo "Python libraries installed successfully!"
 
 # Make all scripts executable
