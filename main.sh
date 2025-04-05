@@ -29,6 +29,7 @@ source venv/bin/activate
 # Install necessary Python libraries
 echo "Installing Python libraries..."
 pip install --upgrade pip
+pip install pillow numpy
 pip install opencv-python opencv-python-headless numpy
 if [ $? -ne 0 ]; then
     echo "Error: Failed to install Python libraries. Please check your network or dependencies."
