@@ -26,7 +26,7 @@ source venv/bin/activate
 
 # Install necessary Python libraries
 echo "Installing Python libraries..."
-pip install opencv-python-headless numpy torch torchvision
+pip install opencv-python opencv-python-headless numpy torch torchvision
 pip install 'git+https://github.com/facebookresearch/detectron2.git'
 if [ $? -ne 0 ]; then
     echo "Error: Failed to install detectron2. Please check your Python version and dependencies."
