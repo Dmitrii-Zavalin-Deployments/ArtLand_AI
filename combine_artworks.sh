@@ -36,19 +36,19 @@ combine_artworks() {
 
     # Step 1: Create a base by merging sketch and painting with subtle blending
     echo "Merging sketch and painting with subtle blending..."
-    magick convert "$painting_path" "$sketch_path" -compose Screen -composite "$output_path"
+    magick "$painting_path" "$sketch_path" -compose Screen -composite "$output_path"
 
     # Step 2: Fill sketch points with colors from the painting
     echo "Matching sketch points to colors from painting..."
-    magick convert "$output_path" "$sketch_path" -compose CopyOpacity -composite "$output_path"
+    magick "$output_path" "$sketch_path" -compose CopyOpacity -composite "$output_path"
 
     # Step 3: Apply additional adjustments for realism
     echo "Refining details and adding realism..."
-    magick convert "$output_path" -modulate 105,120,100 -brightness-contrast 10x15 -normalize "$output_path"
+    magick "$output_path" -modulate 105,120,100 -brightness-contrast 10x15 -normalize "$output_path"
 
     # Step 4: Final artistic enhancements
     echo "Adding final artistic touches..."
-    magick convert "$output_path" -sharpen 0x1 -bordercolor white -border 10 -bordercolor black -border 5 -frame 20x20+5+5 "$output_path"
+    magick "$output_path" -sharpen 0x1 -bordercolor white -border 10 -bordercolor black -border 5 -frame 20x20+5+5 "$output_path"
 
     # Check if the final artwork was successfully created
     if [ -f "$output_path" ]; then
