@@ -3,25 +3,33 @@ import numpy as np
 import os
 from pathlib import Path
 
-def remove_unwanted_elements(sketch_path, cleaned_sketch_path):
-    print(f"Processing {sketch_path} to remove unwanted elements...")
+# Placeholder function to simulate object detection
+def detect_objects(image):
+    # Simulated output: list of bounding boxes [(x1, y1, x2, y2), ...] and sizes
+    # Replace this with actual object detection model output
+    detected_objects = [
+        {"bbox": (50, 50, 200, 200), "size": 150*150},  # Example big object
+        {"bbox": (300, 300, 320, 320), "size": 20*20}   # Example small object
+    ]
+    return detected_objects
+
+def remove_small_objects(sketch_path, cleaned_sketch_path, size_threshold):
+    print(f"Processing {sketch_path}...")
 
     # Load the sketch image
     sketch = cv2.imread(sketch_path)
 
-    # Step 1: Load a pre-trained object detection model (e.g., YOLOv5 or Mask R-CNN)
-    # For simplicity, this step assumes a model is already available and integrated.
-    # You can use an open-source library like ultralytics YOLO or detectron2 for object detection.
+    # Detect objects (you'd replace this with a real detection function)
+    detected_objects = detect_objects(sketch)
 
-    # Placeholder for object detection function
-    # detected_masks = detect_unwanted_objects(sketch)  # Implement this with a deep learning model
+    # Create a mask for small objects
+    mask = np.zeros(sketch.shape[:2], dtype=np.uint8)
+    for obj in detected_objects:
+        if obj["size"] < size_threshold:  # Check size threshold
+            x1, y1, x2, y2 = obj["bbox"]
+            mask[y1:y2, x1:x2] = 255  # Mark small object area on the mask
 
-    # Step 2: Create a mask to isolate unwanted elements (example mask creation)
-    # For demonstration, we manually create a mask. Replace with actual detection results.
-    mask = np.zeros(sketch.shape[:2], dtype=np.uint8)  # Example empty mask
-
-    # Step 3: Perform inpainting to remove unwanted elements using the mask
-    # Replace this with actual detected masks
+    # Inpaint to remove small objects
     inpainted_sketch = cv2.inpaint(sketch, mask, inpaintRadius=3, flags=cv2.INPAINT_TELEA)
 
     # Save the cleaned image
@@ -30,13 +38,14 @@ def remove_unwanted_elements(sketch_path, cleaned_sketch_path):
 
 # File paths
 base_dir = Path(__file__).parent
-colored_sketch_path = base_dir / "converted_sketches" / "colored_sketch.jpg"
+sketch_path = base_dir / "converted_sketches" / "colored_sketch.jpg"
 cleaned_sketch_path = base_dir / "converted_sketches" / "cleaned_colored_sketch.jpg"
 
 # Ensure input file exists
-if not os.path.exists(colored_sketch_path):
-    print(f"Error: File {colored_sketch_path} not found.")
+if not os.path.exists(sketch_path):
+    print(f"Error: File {sketch_path} not found.")
 else:
-    remove_unwanted_elements(str(colored_sketch_path), str(cleaned_sketch_path))
+    # Adjust size threshold based on your requirements (e.g., 1000 pixels)
+    remove_small_objects(str(sketch_path), str(cleaned_sketch_path), size_threshold=1000)
 
 
