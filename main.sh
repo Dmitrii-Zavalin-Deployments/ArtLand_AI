@@ -12,10 +12,10 @@ colored_sketch_script="$base_dir/create_colored_sketch.sh"
 python_script="$base_dir/remove_unwanted_elements.py"
 converted_sketches_folder="$base_dir/converted_sketches"
 
-# Ensure Python version compatibility
+# Ensure Python version compatibility (expand to include Python 3.12)
 PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
-if [[ "$PYTHON_VERSION" < "3.7" || "$PYTHON_VERSION" > "3.10" ]]; then
-    echo "Error: Python version $PYTHON_VERSION is not compatible. Please install Python 3.7 to 3.10."
+if [[ "$PYTHON_VERSION" < "3.7" ]]; then
+    echo "Error: Python version $PYTHON_VERSION is not compatible. Please install Python 3.7 or newer."
     exit 1
 fi
 
@@ -26,6 +26,7 @@ source venv/bin/activate
 
 # Install necessary Python libraries
 echo "Installing Python libraries..."
+pip install --upgrade pip  # Ensure pip is up-to-date
 pip install opencv-python opencv-python-headless numpy torch torchvision
 pip install 'git+https://github.com/facebookresearch/detectron2.git'
 if [ $? -ne 0 ]; then
