@@ -9,7 +9,13 @@ sketch_script="$base_dir/create_sketch.sh"
 painting_script="$base_dir/create_painting.sh"
 combine_script="$base_dir/combine_artworks.sh"
 colored_sketch_script="$base_dir/create_colored_sketch.sh"
+python_script="$base_dir/remove_unwanted_elements.py"
 converted_sketches_folder="$base_dir/converted_sketches"
+
+# Install necessary Python libraries
+echo "Installing Python libraries..."
+pip install opencv-python-headless numpy
+echo "Python libraries installed successfully!"
 
 # Make all scripts executable
 echo "Ensuring all scripts are executable..."
@@ -42,6 +48,12 @@ if [ ! -f "$colored_sketch_script" ]; then
     exit 1
 fi
 
+# Ensure the Python script exists
+if [ ! -f "$python_script" ]; then
+    echo "Error: Script 'remove_unwanted_elements.py' not found in the directory $base_dir"
+    exit 1
+fi
+
 # Delete all files in the converted_sketches folder
 if [ -d "$converted_sketches_folder" ]; then
     echo "Clearing all files in $converted_sketches_folder..."
@@ -68,5 +80,11 @@ bash "$painting_script"
 echo "Starting combine_artworks.sh..."
 bash "$combine_script"
 
+# Run the Python script to remove unwanted elements
+echo "Starting remove_unwanted_elements.py..."
+python3 "$python_script"
+
 # Confirm completion
-echo "Finished creating sketches and paintings!"
+echo "Finished creating and refining sketches and paintings!"
+
+
