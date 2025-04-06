@@ -5,7 +5,6 @@ from skimage.segmentation import clear_border
 from skimage.morphology import label
 import os
 
-
 def process_image(image_path, size_threshold_percentage):
     """
     Processes an input image, filters out small objects, and returns the cleaned image.
@@ -48,12 +47,11 @@ def process_image(image_path, size_threshold_percentage):
         raise RuntimeError(f"Error processing the image: {e}")
 
 
-# Example usage
 if __name__ == "__main__":
     try:
         # Define input and output paths
-        input_path = "input.jpg"  # Update with the correct input file path
-        output_path = "filtered_image.jpg"  # Update with the desired output file path
+        input_path = "converted_sketches/colored_sketch.jpg"
+        output_path = "converted_sketches/filtered_colored_sketch.jpg"
 
         print(f"Processing image: {input_path}")
         output_image = process_image(input_path, size_threshold_percentage=5)
