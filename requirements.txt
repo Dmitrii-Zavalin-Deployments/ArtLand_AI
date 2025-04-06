@@ -1,6 +1,4 @@
-torch
 numpy
-imageio
 scikit-image
 
 
