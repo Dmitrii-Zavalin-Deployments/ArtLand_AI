@@ -8,7 +8,7 @@ ArtLand_AI is an innovative AI software designed to create and enhance artistic 
   - This folder is where you upload your original photos that you want to convert into sketches.
 
 - **Sketches Folder: `converted_sketches`**
-  - This folder stores the sketches and drawings that have been created from your original photos.
+  - This folder stores the sketches, paintings  and drawings that have been created from your original photos.
 
 - **Book Folder: `book_compilation`**
   - This folder is used to collect and organize the selected sketches and the cover page for the final book compilation.
