@@ -6,16 +6,15 @@ from skimage.morphology import label
 import os
 
 
-def process_image(image_path, output_path, size_threshold_percentage):
+def process_image(image_path, output_path):
     """
-    Processes an input image, keeps only main elements (large objects),
-    and saves the cleaned image.
+    Processes an input image to keep only the largest object,
+    making all other objects fully transparent.
     """
     # Ensure the file exists
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"No such file: '{image_path}'")
 
-    # Load the image
     try:
         # Load image and convert to grayscale
         image = io.imread(image_path)
@@ -31,22 +30,25 @@ def process_image(image_path, output_path, size_threshold_percentage):
         # Label connected regions
         labeled_image = label(binary_image)
 
-        # Calculate total pixels of the image
-        total_pixels = image.shape[0] * image.shape[1]
+        # Identify the largest object by area
+        regions = measure.regionprops(labeled_image)
+        largest_region = max(regions, key=lambda r: r.area) if regions else None
 
-        # Process regions to keep only large objects
-        for region in measure.regionprops(labeled_image):
-            region_area = region.area
-            region_percentage = (region_area / total_pixels) * 100
+        # Create a transparent version of the image
+        transparent_image = np.zeros((image.shape[0], image.shape[1], 4), dtype=np.uint8)
 
-            # Remove small regions below the size threshold
-            if region_percentage < size_threshold_percentage:
-                for coords in region.coords:
-                    # Replace small regions with white in the original image
-                    image[coords[0], coords[1]] = [255, 255, 255]  # White
+        for region in regions:
+            for coords in region.coords:
+                if region == largest_region:
+                    # Keep the largest region as it is
+                    transparent_image[coords[0], coords[1], :3] = image[coords[0], coords[1]]  # Preserve color
+                    transparent_image[coords[0], coords[1], 3] = 255  # Set alpha to opaque
+                else:
+                    # Make other regions fully transparent
+                    transparent_image[coords[0], coords[1], 3] = 0  # Fully transparent
 
-        # Save the cleaned image
-        io.imsave(output_path, image)
+        # Save the processed image
+        io.imsave(output_path, transparent_image)
         print(f"Processed image saved to: {output_path}")
 
     except Exception as e:
@@ -57,13 +59,10 @@ if __name__ == "__main__":
     try:
         # Define input and output file paths
         input_path = "converted_sketches/colored_sketch.jpg"
-        output_path = "converted_sketches/filtered_colored_sketch.jpg"
-
-        # Define the size threshold percentage (adjust as needed)
-        size_threshold_percentage = 5  # Keeps regions larger than 5% of the image
+        output_path = "converted_sketches/filtered_colored_sketch.png"  # Save as PNG to support transparency
 
         print(f"Processing image: {input_path}")
-        process_image(input_path, output_path, size_threshold_percentage)
+        process_image(input_path, output_path)
 
     except FileNotFoundError as fnf_error:
         print(fnf_error)
@@ -73,3 +72,6 @@ if __name__ == "__main__":
 
     except Exception as general_error:
         print(f"Unexpected error: {general_error}")
+
+
+
